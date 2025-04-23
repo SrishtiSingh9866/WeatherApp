@@ -1,17 +1,22 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = 'weatherapp'
+        CONTAINER_NAME = 'weatherapp-container'
+    }
+
     stages {
-        stage('Clone Repository') {
+        stage('Clone Repo') {
             steps {
-                git 'https://github.com/SrishtiSingh9866/WeatherApp'
+                git 'https://github.com/SrishtiSingh9866/WeatherApp.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("weatherapp")
+                    docker.build("${IMAGE_NAME}")
                 }
             }
         }
@@ -19,7 +24,11 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    dockerImage.run("-p 80:80")
+                    // Stop & remove old container if exists
+                    sh "docker rm -f ${CONTAINER_NAME} || true"
+
+                    // Run new container
+                    sh "docker run -d --name ${CONTAINER_NAME} -p 3000:80 ${IMAGE_NAME}"
                 }
             }
         }

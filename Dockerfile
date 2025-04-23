@@ -1,17 +1,17 @@
 # Use official Nginx image
 FROM nginx:alpine
 
-# Set working directory inside container
+# Set working directory
 WORKDIR /usr/share/nginx/html
 
-# Remove the default nginx static files
+# Remove default static files
 RUN rm -rf ./*
 
-# Copy your WeatherApp static files into the container
+# Copy your static site into the container
 COPY . .
 
-# Expose the web port
+# Expose port 80
 EXPOSE 80
 
-# Start Nginx in the foreground
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
